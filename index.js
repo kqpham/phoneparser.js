@@ -1,3 +1,5 @@
+//import { PhoneNumber } from 'google-libphonenumber';
+
 var express = require('express');
 var app = express();
 var port = 3000;
@@ -37,11 +39,11 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
 
 app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, res) {
   
-   if (!req.files) {
+   if (!req.file) {
     res.status(400).send('File not found');
   } 
    else {
-    var inFile = req.params.file.path;
+    var inFile = req.file.path;
     
 
     fs.readFile(req.file.path, function (err, contents) {
@@ -55,9 +57,9 @@ app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, r
       var numArr = numbers.split('\n');
       var phone = [];
       for(var i =0; i<numArr.length; i++){
-        phone.push(numArr[i]);
-        phone = phoneUtil.parse(numArr[i], 'CA');
-        phone = phone.push(phoneUtil.format(phone, PNF.INTERNATIONAL));
+        phone[i] = numArr[i];
+        phone[i] = phoneUtil.parse(numArr[i], 'CA');
+        phone[i]= phoneUtil.format(phone[i], PNF.INTERNATIONAL);
       }
 
       res.status(200).send(phone);
