@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
 });
 //create a server object:
 if (app.get('/api/phonenumbers/parse/text/', function (req, res) {
-  res.send('[]');
+  res.status(400).send('[]');
 }));
 
 app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
@@ -33,7 +33,7 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
   phone = phoneUtil.parse(inString, 'CA');
   phone = phoneUtil.format(phone, PNF.INTERNATIONAL);
   res.send(phone);
-  console.log(phoneUtil.format(phone, PNF.INTERNATIONAL));
+  
 
 });
 
