@@ -15,13 +15,15 @@ var fs = require('fs');
 var fileUpload = require('express-fileupload');
 parser.addRule(phoneReg, '');
 
-app.get('/', function (req, res) {
+/* app.get('/', function (req, res) {
   res.redirect('/api/phonenumbers/parse/text/')
-});
+});*/
 //create a server object:
-if (app.get('/api/phonenumbers/parse/text/', function (req, res) {
-  res.status(400).send('[]');
-}));
+
+app.get('/', function (req, res) {
+  //res.status(400).send('[]');
+  res.send('hello');
+});
 
 app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
 
@@ -72,4 +74,5 @@ app.listen(port, (err) => {
     return console.log('something bad happened', err)
   }
   console.log(`server is listening on ${port}`)
+  
 });
