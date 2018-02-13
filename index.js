@@ -21,8 +21,7 @@ parser.addRule(phoneReg, '');
 //create a server object:
 
 app.get('/', function (req, res) {
-  //res.status(400).send('[]');
-  res.send('hello');
+  res.status(400).send('[]');
 });
 
 app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
@@ -76,3 +75,5 @@ app.listen(port, (err) => {
   console.log(`server is listening on ${port}`)
   
 });
+
+module.exports = app;
