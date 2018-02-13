@@ -21,8 +21,7 @@ parser.addRule(phoneReg, '');
 //create a server object:
 
 app.get('/', function (req, res) {
-  //res.status(400).send('[]');
-  res.send('hello');
+  res.status(400).send('[]');
 });
 
 app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
@@ -31,12 +30,11 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
   inString = decodeURIComponent(inString);
   inString = parser.render(inString);
   var phone = [];
-  phone.push(inString);
-  phone = phoneUtil.parse(inString, 'CA');
-  phone = phoneUtil.format(phone, PNF.INTERNATIONAL);
+  var numbers;
+  numbers = phoneUtil.parse(inString, 'CA');
+  phone.push(phoneUtil.format(numbers, PNF.INTERNATIONAL));
   res.send(phone);
   
-
 });
 
 app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, res) {
@@ -76,3 +74,5 @@ app.listen(port, (err) => {
   console.log(`server is listening on ${port}`)
   
 });
+
+module.exports = app;
