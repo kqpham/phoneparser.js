@@ -30,9 +30,9 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
   inString = decodeURIComponent(inString);
   inString = parser.render(inString);
   var phone = [];
-  phone.push(inString);
-  phone = phoneUtil.parse(inString, 'CA');
-  phone = phoneUtil.format(phone, PNF.INTERNATIONAL);
+  var numbers;
+  numbers = phoneUtil.parse(inString, 'CA');
+  phone.push(phoneUtil.format(numbers, PNF.INTERNATIONAL));
   res.send(phone);
   
 });

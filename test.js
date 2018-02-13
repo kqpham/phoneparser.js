@@ -33,8 +33,7 @@ describe('URI Number Input /api/phonenumbers/parse/text', function(){
             .get('/api/phonenumbers/parse/text/Seneca%20Phone%20Number%3A%20416-491-5050')
             .end(function(err,res){
                 res.should.have.status(200);
-                console.log(res.body);
-                res.body.should.be.a('array').that.include('4164915050');
+                res.body.should.be.a('array').that.include('+1 416-491-5050');
                 done();
             });
     });
