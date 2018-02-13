@@ -35,7 +35,6 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
   phone = phoneUtil.format(phone, PNF.INTERNATIONAL);
   res.send(phone);
   
-
 });
 
 app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, res) {
