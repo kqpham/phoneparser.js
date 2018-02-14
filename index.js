@@ -13,6 +13,7 @@ var Multer = require('multer');
 var upload = Multer({dest: 'uploads/'});
 var fs = require('fs');
 var fileUpload = require('express-fileupload');
+
 parser.addRule(phoneReg, '');
 
 /* app.get('/', function (req, res) {
@@ -43,30 +44,31 @@ app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, r
   
    if (!req.file) {
     res.status(400).send('File not found');
-  } 
-   else {
-    var inFile = req.file.path;
-    
-
-    fs.readFile(req.file.path, function (err, contents) {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      var fileText = contents.toString('ascii');
-      var buf = Buffer.from(fileText, 'base64');
-      var numbers = buf.toString('ascii');
-      var numArr = numbers.split('\n');
-      var phone = [];
-      for(var i =0; i<numArr.length; i++){
-        phone[i] = numArr[i];
-        phone[i] = phoneUtil.parse(numArr[i], 'CA');
-        phone[i]= phoneUtil.format(phone[i], PNF.INTERNATIONAL);
-      }
-
-      res.status(200).send(phone);
-    });
   }
+   
+  //  else {
+  //   var inFile = req.file.path;
+  //   console.log(req.file.originalname);
+
+  //   fs.readFile(req.file.path, function (err, contents) {
+  //     if (err) {
+  //       res.status(500).send(err);
+  //       return;
+  //     }
+  //     var fileText = contents.toString('ascii');
+  //     var buf = Buffer.from(fileText, 'base64');
+  //     var numbers = buf.toString('ascii');
+  //     var numArr = numbers.split('\n');
+  //     var phone = [];
+  //     for(var i =0; i<numArr.length; i++){
+  //       phone[i] = numArr[i];
+  //       phone[i] = phoneUtil.parse(numArr[i], 'CA');
+  //       phone[i]= phoneUtil.format(phone[i], PNF.INTERNATIONAL);
+  //     }
+
+  //     res.status(200).send(phone);
+  //   });
+  // }
 });
 
 app.listen(port, (err) => {
