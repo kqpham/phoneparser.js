@@ -22,15 +22,18 @@ parser.addRule(phoneReg, '');
 });*/
 //create a server object:
 
-async function readMyPDF(fileContents) {
-  var myReturn;
-  pdfText(fileContents, async function(err, chunks) {
-    myReturn = await chunks;
-    // console.log(chunks);
-  });
+// Function for parsing numbers into
+// Human readable phone numbers
+function parseOutput(numArr) {
+  var phone = [];
+  for (var i = 0; i < numArr.length; i++) {
+    phone[i] = numArr[i];
+    phone[i] = phoneUtil.parse(numArr[i], 'CA');
+    phone[i] = phoneUtil.format(phone[i], PNF.INTERNATIONAL);
 
-  return await myReturn;
-  
+  }
+  return phone;
+
 }
 
 
@@ -61,49 +64,23 @@ app.post('/api/phonenumbers/parse/file', upload.single('file'), async function (
 
   else {
     var inFile = req.file.path;
-    var fileContents = fs.readFileSync(inFile);
-    var fileText;
 
-    console.log(readMyPDF(fileContents));
-    res.status(200).send(myPDF);
-    // fs.readFile(req.file.path, function (err, contents) {
-    //   if (err) {
-    //     res.status(500).send(err);
-    //     return;
-    //   }
+    // Check if file is PDF
+    if (req.file.originalname.match(/.*.pdf/)) {
 
-    //   var fileText;
-    //   var numArr = [];
-    //   if (req.file.originalname.match(/.*.pdf/))  {
-    //     pdf(contents).then(data => {
-    //       fileText = data.text;
-    //       // var tempNumArr = fileText.split('\n');
-    //       // fileText = Buffer.from(fileText, 'base64');
-    //       // numArr = fileText.filter(function(x){
-    //       //   return (x !== (undefined || null || ''));
-    //       // });
-    //       base64.decode(fileText, function(err, base64String) {
-    //         console.log(base64String);
-    //       });
-          
-          
-    //     });
-    //   }
-    //   else {
-    //     var numbers = Buffer.from(contents, 'base64').toString('ascii');  
-    //     numArr = numbers.split('\n');
-    //   }
-      
-    //   var phone = [];
-    //   for (var i = 0; i < numArr.length; i++) {
-    //     phone[i] = numArr[i];
-    //     phone[i] = phoneUtil.parse(numArr[i], 'CA');
-    //     phone[i] = phoneUtil.format(phone[i], PNF.INTERNATIONAL);
-    //   }
+      // Use pdfText to read the PDF file appropriately
+      pdfText(inFile, function (err, chunks) {
+        res.status(200).send(parseOutput(chunks));
+      });
 
-    //   res.status(200).send(phone);
-    // });
-   
+    }
+    else {
+      var fileContents = fs.readFileSync(inFile); // Read the contents of the file
+      // Convert file into base64 format, then to ascii string, then split on newline
+      var numbers = Buffer.from(fileContents, 'base64').toString('ascii').split('\n');
+      res.status(200).send(parseOutput(numbers));
+    }
+
   }
 });
 
