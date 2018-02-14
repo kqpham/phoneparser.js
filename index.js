@@ -59,28 +59,35 @@ app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, r
       }
 
       var fileText;
-
-      if (req.file.originalname.match(/.*.pdf/)) {
+      var numArr = [];
+      if (req.file.originalname.match(/.*.pdf/))  {
         pdf(contents).then(data => {
           fileText = data.text.toString('ascii');
-          console.log(fileText);
+          var tempNumArr = fileText.split('\n');
+
+          numArr = tempNumArr.filter(function(x){
+            return (x !== (undefined || null || ''));
+          });
+          
         });
       }
       else {
         fileText = contents.toString('ascii');
-        console.log(fileText);
+        
+        var buf = Buffer.from(fileText, 'base64');
+        var numbers = buf.toString('ascii');
+        numArr = numbers.split('\n');
+        console.log(numArr);
       }
-      // var buf = Buffer.from(fileText, 'base64');
-      // var numbers = buf.toString('ascii');
-      // var numArr = numbers.split('\n');
-      // var phone = [];
-      // for (var i = 0; i < numArr.length; i++) {
-      //   phone[i] = numArr[i];
-      //   phone[i] = phoneUtil.parse(numArr[i], 'CA');
-      //   phone[i] = phoneUtil.format(phone[i], PNF.INTERNATIONAL);
-      // }
+      
+      var phone = [];
+      for (var i = 0; i < numArr.length; i++) {
+        phone[i] = numArr[i];
+        phone[i] = phoneUtil.parse(numArr[i], 'CA');
+        phone[i] = phoneUtil.format(phone[i], PNF.INTERNATIONAL);
+      }
 
-      res.status(200).send("phone");
+      res.status(200).send(phone);
     });
    
   }
