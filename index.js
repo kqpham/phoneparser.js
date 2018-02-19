@@ -49,7 +49,6 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
   numbers = phoneUtil.parse(inString, 'CA');
   phone.push(phoneUtil.format(numbers, PNF.INTERNATIONAL));
   res.send(phone);
-
 });
 
 app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, res) {
