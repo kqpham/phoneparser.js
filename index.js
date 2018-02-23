@@ -15,6 +15,8 @@ var fs = require('fs');
 var fileUpload = require('express-fileupload');
 var pdf = require('pdf-parse');
 parser.addRule(phoneReg, '');
+var AreaCodes = require('areacodes');
+var acode = new AreaCodes();
 
 /* app.get('/', function (req, res) {
   res.redirect('/api/phonenumbers/parse/text/')
@@ -108,13 +110,19 @@ app.get('/api/phonenumbers/parse/text/:pString', function (req, res) {
     console.log("The file was saved!");
 	});
 //---------------- The above code was found here: https://stackoverflow.com/questions/2496710/writing-files-in-node-js
-	
-  res.send(phone);
- 
+  var phoneObject = {};
+  phoneObject.phone = phone[0];
+  acode.get(phone[0], (err, data) =>{
+    if(err){
+      res.send(err);
+    }
+    phoneObject.location = data;
+  })
+  res.send(phoneObject);
 });
 
 app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, res) {
-
+  var phoneObject = [];
   if (!req.file) {
     res.status(400).send('File not found');
   }
@@ -132,7 +140,19 @@ app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, r
         var buf = Buffer.from(fileText, 'base64');
         var numbers = buf.toString('ascii');
         var numArr = numbers.split('\n');
-        res.status(200).send(parseOutput(numArr));
+        var parsedPhoneArr = parseOutput(numArr);
+        parsedPhoneArr.forEach((num, index, array) =>{
+          acode.get(num, (err, data)=>{
+            if(err){
+              res.send(400).send("Error parsing text file");
+            }
+            phoneObject.push({
+              phone: num,
+              location: data
+            })
+          })
+        })        
+        res.status(200).send(phoneObject);
       });
 
     }
@@ -146,11 +166,22 @@ app.post('/api/phonenumbers/parse/file', upload.single('file'), function (req, r
         var buf = Buffer.from(fileText, 'base64');
         var numbers = buf.toString('ascii');
         var numArr = numbers.split('\n');
-        res.status(200).send(parseOutput(numArr));
+        var parsedPhoneArr = parseOutput(numArr);
+        parsedPhoneArr.forEach((num, index, array) =>{
+          acode.get(num, (err, data)=>{
+            if(err){
+              res.send(400).send("Error parsing text file");
+            }
+            phoneObject.push({
+              phone: num,
+              location: data
+            })
+          })
+        })
+        
+        res.status(200).send(phoneObject);
       });
-
     }
-
   }
 });
 
